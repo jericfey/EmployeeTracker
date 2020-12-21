@@ -24,7 +24,7 @@ This is a basic CMS for managing a company's employees from a CLI that the user 
 
 To install necessary dependencies, run the following command:
 
-1. npm install, 2. npm install mysql inquirer, 3. node server.js, 5. Follow the prompts to manage the employees or modify the database content
+1. npm install, 2. npm install mysql inquirer, 3. node server.js, 4. Database schema and seed data located in assets directory 5. Follow the prompts to manage the employees or modify the database content
 
 ## Usage
 
