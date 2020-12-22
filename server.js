@@ -80,13 +80,13 @@ const addEmployee = () => {
   connection.query("SELECT title AS 'name' FROM role;", (err, res) => {
     if (err) throw err;
     currentRoles = res;
-    // Get list of current employees for managers - start with none
-    let currentEmployees = [];
+    // Get list of current employees for managers
+    let currentManagers = [];
     connection.query(
       "SELECT CONCAT(first_name, ' ',last_name) as name FROM employee;",
       (err, res2) => {
         if (err) throw err;
-        currentEmployees = res2;
+        currentManagers = res2;
         // Prompt for input on new employee
         inquirer
           .prompt([
@@ -126,18 +126,18 @@ const addEmployee = () => {
             {
               type: "list",
               message: `Select their Manager:`,
-              choices: currentEmployees,
+              choices: currentManagers,
               name: "manager",
             },
           ])
           .then((response) => {
-            // Get the id for the chosen role
+            // Get the id for the selected role
             connection.query(
               "SELECT id FROM role WHERE title = ?;",
               response.role,
               (err, res3) => {
                 if (err) throw err;
-                // Get the id for the chosen manager
+                // Get the id for the selected manager
                 connection.query(
                   "SELECT id FROM employee WHERE CONCAT(first_name, ' ',last_name) = ?;",
                   response.manager,
@@ -164,6 +164,105 @@ const addEmployee = () => {
     );
   });
 };
+const addRole = () => {
+  let currentDepartments = [];
+  connection.query(
+    "SELECT name AS 'department' FROM department;",
+    (err, res) => {
+      if (err) throw err;
+      currentDepartments = res;
+      // console.log(res);
+
+      inquirer
+        .prompt([
+          {
+            type: "input",
+            message: "Type the name of the new role.",
+            name: "role",
+            validate: function (input) {
+              if (input === "") {
+                console.log(
+                  "New Role name must consist of more than one character."
+                );
+                return false;
+              } else {
+                return true;
+              }
+            },
+          },
+          {
+            type: "input",
+            message: "What is the salary for this new role?",
+            name: "salary",
+          },
+          {
+            type: "list",
+            message: "Select the department the new role will reside in.",
+            choices: currentDepartments,
+            name: "department",
+          },
+        ])
+        .then((response) => {
+          //Get id for selected department
+          connection.query(
+            "SELECT id FROM department WHERE name = ?;",
+            response.department,
+            (err, res2) => {
+              if (err) throw err;
+              connection.query(
+                "INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
+                [response.role, response.salary, res2[0].id],
+                (err, res) => {
+                  if (err) throw err;
+                  console.log(`Role Added`);
+                  viewAllRoles();
+                }
+              );
+            }
+          );
+        });
+    }
+  );
+};
+const addDepartment = () => {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type name of new department.",
+        name: "department",
+        // Validate field is not blank
+        validate: function (input) {
+          if (input === "") {
+            console.log("Value required to create new Department");
+            return false;
+          } else {
+            return true;
+          }
+        },
+      },
+    ])
+    .then((response) => {
+      connection.query(
+        "INSERT INTO department (name) VALUES (?)",
+        [response.department],
+        (err, res) => {
+          if (err) throw err;
+          console.log("Department Added");
+          viewAllDepartments();
+        }
+      );
+    });
+};
+const updateEmpRole = () => {
+  let currentEmployees = [];
+  connection.query();
+};
+const updateEmpManager = () => {};
+const updateEmpDept = () => {};
+const delEmployee = () => {};
+const delRole = () => {};
+const delDept = () => {};
 
 const start = () => {
   console.log(
@@ -231,22 +330,29 @@ const mainMenu = () => {
           //   console.log("Add Employee selected");
           return addEmployee();
         case "Add Role":
-        //   console.log("Add Role selected");
+          //   console.log("Add Role selected");
           return addRole();
         case "Add Department":
-          console.log("Add Department selected");
+          // console.log("Add Department selected");
+          return addDepartment();
         case "Update Employee Role":
-          console.log("Update Employee Role selected");
+          // console.log("Update Employee Role selected");
+          return updateEmpRole();
         case "Update Employee Manager":
-          console.log("Update Employee Manager selected");
+          // console.log("Update Employee Manager selected");
+          return updateEmpManager();
         case "Update Employee Department":
-          console.log("Update Employee Department selected");
+          // console.log("Update Employee Department selected");
+          return updateEmpDept();
         case "Remove Employee":
-          console.log("Remove Employee selected");
+          // console.log("Remove Employee selected");
+          return delEmployee();
         case "Remove Role":
-          console.log("Remove Role selected");
+          // console.log("Remove Role selected");
+          return delRole();
         case "Remove Department":
-          console.log("Remove Department selected");
+          // console.log("Remove Department selected");
+          return delDept();
         default:
           connection.end();
       }
