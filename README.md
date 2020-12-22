@@ -4,7 +4,7 @@
 
 ## Description
 
-This is a basic CMS for managing a company's employees from a CLI that the user can interact with using Node.js, inquirer and MySQL. 
+This is a basic CMS for managing a company's employees from a CLI that the user can interact with using Node.js, inquirer and MySQL.
 
 ## Table of Contents
 
@@ -32,9 +32,10 @@ _Instructions and examples of how to use:_
 
 > node server.js
 
-![TemplateEngine Screenshot](./assets/Screenshot.jpg)
+![EmployeeManager Screenshot](./assets/Screenshot.jpg)
+![Gif demo of Employee Manager](./assets/EmployeeManager.gif)
 
-This application can be used by anyone in the company to manage employee information on Title, salary, department, first and last name. 
+This application can be used by anyone in the company to manage employee information on Title, salary, department, first and last name.
 
 ## License
 
