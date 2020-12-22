@@ -256,11 +256,98 @@ const addDepartment = () => {
 };
 const updateEmpRole = () => {
   let currentEmployees = [];
-  connection.query();
+  let currentRoles = [];
+  connection.query(
+    "SELECT CONCAT(first_name, ' ',last_name) as name FROM employee;",
+    (err, res) => {
+      if (err) throw err;
+      currentEmployees = res;
+      connection.query("SELECT title AS 'role' FROM role;", (err, res) => {
+        if (err) throw err;
+        currentRoles = res;
+        inquirer
+          .prompt([
+            {
+              type: "list",
+              message: "Select employee to change their role.",
+              choices: currentEmployees,
+              name: "employee",
+            },
+            {
+              type: "list",
+              message: "Select the role to apply to this employee.",
+              choices: currentRoles,
+              name: "role",
+            },
+          ])
+          .then((response) => {
+            connection.query(
+              "SELECT id FROM employee WHERE CONCAT(first_name, ' ',last_name) = ?;",
+              response.employee,
+              (err, res2) => {
+                if (err) throw err;
+                connection.query(
+                  "SELECT id FROM role WHERE title = ?",
+                  response.role,
+                  (err, res3) => {
+                    if (err) throw err;
+                    connection.query(
+                      "UPDATE employee SET role_id = ? WHERE id = ?;",
+                      [res3[0].id, res2[0].id],
+                      (err, res3) => {
+                        if (err) throw err;
+                        console.log(`Employee role modified`);
+                        viewAllEmployees();
+                      }
+                    );
+                  }
+                );
+              }
+            );
+          });
+      });
+    }
+  );
 };
 const updateEmpManager = () => {};
 const updateEmpDept = () => {};
-const delEmployee = () => {};
+const delEmployee = () => {
+  let currentEmployees = [];
+  connection.query(
+    "SELECT CONCAT(first_name, ' ',last_name) as name FROM employee;",
+    (err, res) => {
+      if (err) throw err;
+      currentEmployees = res;
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            message: "Select employee to be deleted.",
+            choices: currentEmployees,
+            name: "employee",
+          },
+        ])
+        .then((response) => {
+          connection.query(
+            "SELECT id FROM employee WHERE CONCAT(first_name, ' ',last_name) = ?;",
+            response.employee,
+            (err, res) => {
+              if (err) throw err;
+              connection.query(
+                "DELETE FROM employee WHERE id = ?;",
+                res.id,
+                (err, res2) => {
+                  if (err) throw err;
+                  console.log("Employee deleted from database");
+                  viewAllEmployees();
+                }
+              );
+            }
+          );
+        });
+    }
+  );
+};
 const delRole = () => {};
 const delDept = () => {};
 
