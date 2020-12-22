@@ -2,14 +2,14 @@
 USE employee_cms_db;
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES ("John", "Doe", 1, 0), 
+VALUES ("John", "Doe", 1, null), 
 ("Mike", "Chan", 2, 1), 
-("Ashley", "Rodriquez", 3, 2),
-("Kevin", "Tupik", 2, 1), 
-("Kunal", "Singh", 2, 1), 
-("Malia", "Brown", 2, 1), 
-("Sarah", "Lourd", 2, 1), 
-("Tom", "Allen", 2, 1); 
+("Ashley", "Rodriquez", 3, null),
+("Kevin", "Tupik", 4, 3), 
+("Kunal", "Singh", 5, null), 
+("Malia", "Brown", 6, 5), 
+("Sarah", "Lourd", 7, null), 
+("Tom", "Allen", 8, 7); 
 
 
 INSERT INTO role(title, salary, department_id)
